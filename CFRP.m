@@ -2,21 +2,20 @@ clear
 clc
 
 % Social Life Cycle Analysis - Threshold methodology (50%)  
-% Social Hotspot Count - Aluminium 2024 T3
+% Social Hotspot Count - CFRP
 
 %% Structural Aircraft Component
 
 
 % Life phases
-mat1=["CHN" "GUI" "RUS" "GUY" "CAN"];
-mat2=["AUS" "CHI" "PER" "MON" "CON"];
-man1=["USA" "ICE" "AUS" "CHN" "SUI"];
-man2=["FRA" "USA" "CHN" "GER" "ISR"];
-eol=["USA" "GBR" "GER" "IND" "THA" ];
+mat1=["JPN" "CHN" "KOR" "GBR" "GER"];
+mat2=["USA" "MAR" "ESP" "CHN" "NED"];
+man1=["FRA" "USA" "CHN" "GER" "ISR"];
+eol=["FRA" "GBR" "BEL"];
 
 % DOE 
-doe_sLCA = fullfact ([5 5 5 5 5]);     % the size is different depending on how many the countries are in each life stage
-sLCA_list=strings(length(doe_sLCA),5); % the second number changes depending on the life stages
+doe_sLCA = fullfact ([5 5 5 3]);     % the size is different depending on how many the countries are in each life stage
+sLCA_list=strings(length(doe_sLCA),4); % the second number changes depending on the life stages
 
 
 
@@ -25,8 +24,7 @@ for i=1: length(doe_sLCA)
     sLCA_list(i,:) = [mat1(doe_sLCA(i,1)) , ...
                         mat2(doe_sLCA(i,2)), ...
                         man1(doe_sLCA(i,3)), ...
-                        man2(doe_sLCA(i,4)), ...
-                        eol(doe_sLCA(i,5)) ];
+                        eol(doe_sLCA(i,4)) ];
 
 end
 
@@ -61,10 +59,10 @@ weights = [0.2, 0.2, 0.2, 0.2, 0.2];  % 1. workers, 2. consumers, 3. local commu
 result_matrix = [];
 
 % Perform the weighted sum for every n rows (n depending on the life stages)
-for i = 1:5:size(num_matrix, 1)
+for i = 1:4:size(num_matrix, 1)
     if i+2 <= size(num_matrix, 1)
         % Extract the chunk of n rows
-        chunk = num_matrix(i:i+4, :);
+        chunk = num_matrix(i:i+3, :);
         % Calculate the weighted sum for each column
         weighted_sum = sum(chunk .* weights);
         % Append the weighted sum to the result matrix
@@ -81,7 +79,7 @@ end
 [best_scenario, rowIndex] = min(scores(:));
 [worst_scenario,row2Index] = max(scores(:));
 
-fprintf('The best-case scenario is: \n Raw Material 1 (Bauxite): %s \n Raw Material 2 (Copper Mine): %s \n Material Manufacturing (Aluminium 2024 T3): %s \n Component Manufacturing: %s \n End of Life: %s\n\n', sLCA_list(rowIndex,1:5));
+fprintf('The best-case scenario is: \n Raw Material 1 (Carbon Fiber): %s \n Raw Material 2 (Epoxy Resin): %s \n Component Manufacturing: %s \n End of Life: %s\n\n', sLCA_list(rowIndex,1:4));
 
-fprintf('The worst-case scenario is: \n Raw Material 1 (Bauxite): %s \n Raw Material 2 (Copper Mine): %s \n Material Manufacturing (Aluminium 2024 T3): %s \n Component Manufacturing: %s \n End of Life: %s\n\n', sLCA_list(row2Index,1:5));
+fprintf('The worst-case scenario is: \n Raw Material 1 (Carbon Fiber): %s \n Raw Material 2 (Epoxy Resin): %s \n Component Manufacturing: %s \n End of Life: %s\n\n', sLCA_list(row2Index,1:4));
 

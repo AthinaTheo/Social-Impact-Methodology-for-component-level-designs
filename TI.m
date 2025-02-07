@@ -2,21 +2,22 @@ clear
 clc
 
 % Social Life Cycle Analysis - Threshold methodology (50%)  
-% Social Hotspot Count - Aluminium 2024 T3
+% Social Hotspot Count - Ti-6Al-4V
 
 %% Structural Aircraft Component
 
 
 % Life phases
-mat1=["CHN" "GUI" "RUS" "GUY" "CAN"];
-mat2=["AUS" "CHI" "PER" "MON" "CON"];
-man1=["USA" "ICE" "AUS" "CHN" "SUI"];
+mat1=["MAD" "RSA" "MOZ" "BRA" "GBR"];
+mat2=["CHN" "GUI" "RUS" "GUY" "CAN"];
+mat3=["BRA" "RSA" "RUS" "CHN"];
+man1=["USA" "GER" "GBR" "POL" "JPN"];
 man2=["FRA" "USA" "CHN" "GER" "ISR"];
-eol=["USA" "GBR" "GER" "IND" "THA" ];
+eol=["FRA" "CAN" "USA" "GBR"];
 
 % DOE 
-doe_sLCA = fullfact ([5 5 5 5 5]);     % the size is different depending on how many the countries are in each life stage
-sLCA_list=strings(length(doe_sLCA),5); % the second number changes depending on the life stages
+doe_sLCA = fullfact ([5 5 4 5 5 4]);     % the size is different depending on how many the countries are in each life stage
+sLCA_list=strings(length(doe_sLCA),6); % the second number changes depending on the life stages
 
 
 
@@ -24,9 +25,10 @@ for i=1: length(doe_sLCA)
 
     sLCA_list(i,:) = [mat1(doe_sLCA(i,1)) , ...
                         mat2(doe_sLCA(i,2)), ...
-                        man1(doe_sLCA(i,3)), ...
-                        man2(doe_sLCA(i,4)), ...
-                        eol(doe_sLCA(i,5)) ];
+                        mat3(doe_sLCA(i,3)), ...
+                        man1(doe_sLCA(i,4)), ...
+                        man2(doe_sLCA(i,5)), ...
+                        eol(doe_sLCA(i,6)) ];
 
 end
 
@@ -61,10 +63,10 @@ weights = [0.2, 0.2, 0.2, 0.2, 0.2];  % 1. workers, 2. consumers, 3. local commu
 result_matrix = [];
 
 % Perform the weighted sum for every n rows (n depending on the life stages)
-for i = 1:5:size(num_matrix, 1)
+for i = 1:6:size(num_matrix, 1)
     if i+2 <= size(num_matrix, 1)
         % Extract the chunk of n rows
-        chunk = num_matrix(i:i+4, :);
+        chunk = num_matrix(i:i+5, :);
         % Calculate the weighted sum for each column
         weighted_sum = sum(chunk .* weights);
         % Append the weighted sum to the result matrix
@@ -81,7 +83,7 @@ end
 [best_scenario, rowIndex] = min(scores(:));
 [worst_scenario,row2Index] = max(scores(:));
 
-fprintf('The best-case scenario is: \n Raw Material 1 (Bauxite): %s \n Raw Material 2 (Copper Mine): %s \n Material Manufacturing (Aluminium 2024 T3): %s \n Component Manufacturing: %s \n End of Life: %s\n\n', sLCA_list(rowIndex,1:5));
+fprintf('The best-case scenario is: \n Raw Material 1 (Titanium Ore): %s \n Raw Material 2 (Bauxite): %s \n Raw Material 3 (Vanadium): %s \n Material Manufacturing (Ti-6Al-4V): %s \n Component Manufacturing: %s \n End of Life: %s\n\n', sLCA_list(rowIndex,1:6));
 
-fprintf('The worst-case scenario is: \n Raw Material 1 (Bauxite): %s \n Raw Material 2 (Copper Mine): %s \n Material Manufacturing (Aluminium 2024 T3): %s \n Component Manufacturing: %s \n End of Life: %s\n\n', sLCA_list(row2Index,1:5));
+fprintf('The worst-case scenario is:\n Raw Material 1 (Titanium Ore): %s \n Raw Material 2 (Bauxite): %s \n Raw Material 3 (Vanadium): %s \n Material Manufacturing (Ti-6Al-4V): %s \n Component Manufacturing: %s \n End of Life: %s\n\n', sLCA_list(row2Index,1:6));
 
